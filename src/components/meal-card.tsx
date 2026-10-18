@@ -7,12 +7,13 @@ const r1 = (n: number | null) => (n == null ? '—' : String(Math.round(n * 10) 
 
 export function MealCard({ meal, showDate = false, photos = [] }: { meal: Meal; showDate?: boolean; photos?: { id: number; url: string }[] }) {
   const hasMacros = meal.kcal != null;
+  const items = (Array.isArray(meal.items) ? meal.items : []) as { nombre: string; cantidad?: string | null; kcal?: number | null; protein?: number | null }[];
   return (
     <article className="rounded-2xl border border-line bg-card p-3.5">
       <div className="flex gap-3">
         {photos[0] && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photos[0].url} alt="" className="size-16 shrink-0 rounded-xl object-cover" loading="lazy" />
+          <img src={`/api/fotos/${photos[0].id}`} alt="" className="size-16 shrink-0 rounded-xl object-cover" loading="lazy" />
         )}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -39,15 +40,26 @@ export function MealCard({ meal, showDate = false, photos = [] }: { meal: Meal; 
       ) : (
         <p className="mt-2 text-xs text-ink-3">Sin macros estimados (no suma al total).</p>
       )}
-      {(meal.calidadUltraprocesado || meal.calidadBeneficios) && (
+      {(meal.calidadUltraprocesado || meal.calidadBeneficios || items.length > 0) && (
         <details className="group mt-2 text-sm">
-          <summary className="cursor-pointer list-none text-xs font-bold text-palta">Ver calidad <span className="inline-block transition-transform group-open:rotate-90">›</span></summary>
+          <summary className="cursor-pointer list-none text-xs font-bold text-palta">Ver detalle <span className="inline-block transition-transform group-open:rotate-90">›</span></summary>
           <div className="mt-1.5 space-y-1.5 text-ink-2">
+            {items.length > 0 && (
+              <ul className="text-xs tabular-nums">
+                {items.map((it, i) => (
+                  <li key={i} className="flex gap-2 border-b border-line py-1 last:border-0">
+                    <span className="flex-1">{it.nombre}{it.cantidad ? ` · ${it.cantidad}` : ''}</span>
+                    <span>{r1(it.kcal ?? null)} kcal · {r1(it.protein ?? null)} g prot</span>
+                  </li>
+                ))}
+              </ul>
+            )}
             {meal.calidadUltraprocesado && <p><b className="text-ink">Ultraprocesado:</b> {meal.calidadUltraprocesado}</p>}
             {meal.calidadBeneficios && <p><b className="text-ink">Beneficios:</b> {meal.calidadBeneficios}</p>}
           </div>
         </details>
       )}
+      <Link href={`/cargar?fecha=${meal.date}&editar=${encodeURIComponent(meal.chatId)}`} className="mt-2 inline-block text-xs font-bold text-ink-3 hover:text-palta">corregir</Link>
     </article>
   );
 }

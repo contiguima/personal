@@ -32,3 +32,38 @@ Crear un proyecto en neon.tech y copiar el connection string en `DATABASE_URL`.
 
 ### Vercel
 Importar el repo, cargar las mismas variables de entorno y deployar. Correr `db:migrate` y `db:seed` una vez apuntando a Neon.
+
+## Formato de carga (pantalla Cargar → "Del chat")
+
+Sin API key de Anthropic, el análisis de las fotos se hace en el chat con Claude, que devuelve un bloque así para pegar en la app.
+Se ve una vista previa (platos, total del día vs objetivo, lo que falta) y recién al confirmar se guarda.
+
+```json
+{
+  "days": {
+    "2026-10-18": {
+      "trainingDay": false,
+      "meals": [{
+        "chatId": "2026-10-18-cena",
+        "category": "Cena",
+        "desc": "Pechuga al horno con papa y brócoli",
+        "confidence": "media-alta",
+        "kcal": 434, "protein": 52, "carbs": 38, "fat": 9, "fiber": 6.5,
+        "items": [{ "nombre": "Pechuga al horno", "cantidad": "200 g cruda", "kcal": 264, "protein": 49.6, "carbs": 0, "fat": 5.8, "fiber": 0 }],
+        "calidad": { "ultraprocesado": "Bajo", "beneficios": "Proteína magra y fibra", "puntaje": 9 }
+      }],
+      "sleep": { "duration_min": 509, "score": 94, "phases": { "vigilia": 4, "rem": 24, "ligero": 64, "profundo": 8 } },
+      "training": { "tipo": "Fuerza", "duracion": "60 min", "kcalActivas": 320, "fcProm": "128", "dolor": "No" },
+      "activity": { "steps": 9500, "activeKcal": 480, "restKcal": 1620 },
+      "measurements": { "weight": 75.4, "waist": 85, "hip": 101 },
+      "note": "…"
+    }
+  },
+  "timeUse": { "2026-10-18": { "deporte": 1, "trabajoCorpo": 0, "sideHustle": 2, "emprendedurismo": 1, "aprendizaje": 0, "tiktok": 0.5, "social": 3, "otros": 0 } }
+}
+```
+
+- Todos los bloques son opcionales. Lo que no viene no se toca; `null` borra ese bloque.
+- **Mismo `chatId` = corrección**: se actualiza esa comida, no se duplica. Sin `chatId`, la app asigna `fecha-categoría` (con `-2`, `-3` si ya existe).
+- Categorías: Pre-entreno, Desayuno, Almuerzo, Snack, Merienda, Cena, Postre. Confianza: alta, media-alta, media, baja-media, baja.
+- Un día cerrado no se pisa salvo que lo tildes explícitamente en la vista previa.

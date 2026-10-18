@@ -77,5 +77,5 @@ const FIBER_TIPS = [
 export function fiberTip(missing: number, date: string) {
   if (missing <= 0) return null;
   const tip = FIBER_TIPS[Number(date.slice(-2)) % FIBER_TIPS.length];
-  return `Te faltan ${round1(missing)} g de fibra: sumá ${tip.veg} en la próxima comida — ${tip.portion} son ~${tip.fiber} g.`;
+  return `Te faltan ${String(round1(missing)).replace('.', ',')} g de fibra: sumá ${tip.veg} en la próxima comida — ${tip.portion} son ~${tip.fiber} g.`;
 }

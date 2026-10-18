@@ -19,7 +19,10 @@ const mealSchema = z.object({
   confidence: z.string().nullable().optional(),
   kcal: num, protein: num, carbs: num, fat: num, fiber: num,
   calidad: z.object({ ultraprocesado: txt, beneficios: txt, puntaje: num }).nullable().optional(),
-  items: z.array(z.record(z.string(), z.unknown())).nullable().optional(),
+  // Desglose por plato (modo estricto): cada plato con sus macros.
+  items: z.array(z.object({
+    nombre: z.string(), cantidad: txt, kcal: num, protein: num, carbs: num, fat: num, fiber: num,
+  })).nullable().optional(),
 });
 
 const daySchema = z.object({
@@ -51,6 +54,8 @@ export const ingestSchema = z.object({
   timeUse: z.record(isoDate, timeUseSchema).default({}),
 });
 export type IngestPayload = z.input<typeof ingestSchema>;
+export type ParsedPayload = z.output<typeof ingestSchema>;
+export type ParsedMeal = z.output<typeof mealSchema>;
 
 export type IngestOptions = {
   /** Permite pisar días cerrados (el seed inicial y correcciones explícitas). */

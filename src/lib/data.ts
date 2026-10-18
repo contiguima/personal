@@ -1,8 +1,7 @@
 import 'server-only';
 import { and, asc, desc, gte, ilike, inArray, lte, or, sql, type SQL } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
-import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
+import { requireUser } from './session';
 import { getDb } from '@/db';
 import * as s from '@/db/schema';
 import { DEFAULT_TARGETS } from './constants';
@@ -10,8 +9,7 @@ import type { DayFull, Targets } from './calc';
 
 // Toda lectura pasa por acá: verifica la sesión además del proxy.
 async function db() {
-  const session = await auth();
-  if (!session?.user) redirect('/login');
+  await requireUser();
   return getDb();
 }
 

@@ -45,7 +45,7 @@ async function Hoy({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
         title={date === today ? 'Hoy' : fmtLong(date)}
         subtitle={
           <span className="flex flex-wrap items-center gap-1.5">
-            {date === today && <span className="capitalize">{fmtLong(date)}</span>}
+            {date === today && <span className="first-letter:uppercase">{fmtLong(date)}</span>}
             {day?.trainingDay === true && <Pill tone="coral">día de entreno</Pill>}
             {day?.trainingDay === false && <Pill tone="agua">día de descanso</Pill>}
             {day?.closed && <Pill tone="palta">cerrado ✓</Pill>}

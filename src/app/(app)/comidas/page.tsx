@@ -75,7 +75,7 @@ async function Comidas({ searchParams }: Pick<PageProps<'/comidas'>, 'searchPara
         <div className="space-y-5">
           {groups.map((g) => (
             <section key={g.date} className="aparecer">
-              <h2 className="mb-2 text-sm font-extrabold capitalize text-ink-2">
+              <h2 className="mb-2 text-sm font-extrabold text-ink-2 first-letter:uppercase">
                 <Link href={`/?fecha=${g.date}`} className="hover:text-palta">{fmtLong(g.date)}</Link>
               </h2>
               <div className="grid gap-2.5 md:grid-cols-2">
