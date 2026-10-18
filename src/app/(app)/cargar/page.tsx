@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getDay, getPreviousMeasurement } from '@/lib/data';
 import { fmtLong, isValidDate, todayAR, weekdayIdx } from '@/lib/dates';
@@ -16,6 +17,7 @@ export default function CargarPage({ searchParams }: PageProps<'/cargar'>) {
 }
 
 async function CargarData({ searchParams }: Pick<PageProps<'/cargar'>, 'searchParams'>) {
+  await connection(); // dinámica desde el principio: usa la fecha de hoy y la sesión
   const sp = await searchParams;
   const today = todayAR();
   const date = isValidDate(sp.fecha) && sp.fecha <= today ? sp.fecha : today;

@@ -1,15 +1,15 @@
 import 'server-only';
 import { and, asc, desc, gte, ilike, inArray, lte, or, sql, type SQL } from 'drizzle-orm';
 import type { AnyPgColumn } from 'drizzle-orm/pg-core';
-import { requireUser } from './session';
+import { requireViewer } from './session';
 import { getDb } from '@/db';
 import * as s from '@/db/schema';
 import { DEFAULT_TARGETS } from './constants';
 import type { DayFull, Targets } from './calc';
 
-// Toda lectura pasa por acá: verifica la sesión además del proxy.
+// Toda lectura pasa por acá: verifica la sesión además del proxy (o la vista previa pública, si está prendida).
 async function db() {
-  await requireUser();
+  await requireViewer();
   return getDb();
 }
 
@@ -96,13 +96,14 @@ export async function searchMeals(f: MealFilters) {
     d.select().from(s.meals).where(cond).orderBy(desc(s.meals.date), desc(s.meals.sortOrder)).limit(f.limit),
     d.select({ total: sql<number>`count(*)::int` }).from(s.meals).where(cond),
   ]);
-  const photos = rows.length
+  const { authed } = await requireViewer();
+  const photos = rows.length && authed
     ? await d.select().from(s.mealPhotos).where(inArray(s.mealPhotos.mealId, rows.map((r) => r.id)))
     : [];
   return { rows: rows.map((r) => ({ ...r, photos: photos.filter((p) => p.mealId === r.id) })), total };
 }
 
 export async function getDayPhotos(mealIds: number[]) {
-  if (!mealIds.length) return [];
+  if (!mealIds.length || !(await requireViewer()).authed) return [];
   return (await db()).select().from(s.mealPhotos).where(inArray(s.mealPhotos.mealId, mealIds));
 }

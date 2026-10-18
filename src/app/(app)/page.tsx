@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getDay, getDateBounds, getPreviousMeasurement, getTargets, getDayPhotos } from '@/lib/data';
 import { addDays, fmtLong, isValidDate, minToHM, todayAR, weekdayIdx } from '@/lib/dates';
@@ -19,6 +20,7 @@ export default function HoyPage({ searchParams }: PageProps<'/'>) {
 const MACRO_COLOR = { kcal: 'var(--m-kcal)', protein: 'var(--m-protein)', carbs: 'var(--m-carbs)', fat: 'var(--m-fat)', fiber: 'var(--m-fiber)' };
 
 async function Hoy({ searchParams }: Pick<PageProps<'/'>, 'searchParams'>) {
+  await connection(); // dinámica desde el principio: usa la fecha de hoy y la sesión
   const sp = await searchParams;
   const today = todayAR();
   const date = isValidDate(sp.fecha) ? sp.fecha : today;

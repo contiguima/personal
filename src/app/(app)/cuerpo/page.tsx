@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getMeasurements, getSleepSeries, getDateBounds } from '@/lib/data';
 import { addDays, fmtLong, fmtShort, minToHM, todayAR } from '@/lib/dates';
@@ -22,6 +23,7 @@ type RangeKey = keyof typeof RANGES;
 const c = (n: number | null | undefined) => (n == null ? '—' : String(round1(n)).replace('.', ','));
 
 async function Cuerpo({ searchParams }: Pick<PageProps<'/cuerpo'>, 'searchParams'>) {
+  await connection(); // dinámica desde el principio: usa la fecha de hoy y la sesión
   const sp = await searchParams;
   const rk: RangeKey = typeof sp.rango === 'string' && sp.rango in RANGES ? (sp.rango as RangeKey) : '30';
   const today = todayAR();

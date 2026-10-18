@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { searchMeals } from '@/lib/data';
@@ -22,6 +23,7 @@ const list = (v: string | string[] | undefined) => (v == null ? [] : Array.isArr
 const PAGE = 40;
 
 async function Comidas({ searchParams }: Pick<PageProps<'/comidas'>, 'searchParams'>) {
+  await connection(); // dinámica desde el principio: usa la fecha de hoy y la sesión
   const sp = await searchParams;
   const q = typeof sp.q === 'string' ? sp.q.slice(0, 80) : '';
   const categories = list(sp.cat).filter((c) => (MEAL_CATEGORIES as readonly string[]).includes(c));

@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { getDays, getMeasurements, getTargets, getDateBounds } from '@/lib/data';
@@ -18,6 +19,7 @@ export default function SemanaPage({ searchParams }: PageProps<'/semana'>) {
 const r = (n: number | null, d = 0) => (n == null ? '—' : String(d ? round1(n) : Math.round(n)).replace('.', ','));
 
 async function Semana({ searchParams }: Pick<PageProps<'/semana'>, 'searchParams'>) {
+  await connection(); // dinámica desde el principio: usa la fecha de hoy y la sesión
   const sp = await searchParams;
   const today = todayAR();
   const monday = mondayOf(isValidDate(sp.semana) ? sp.semana : today);

@@ -67,3 +67,12 @@ Se ve una vista previa (platos, total del día vs objetivo, lo que falta) y reci
 - **Mismo `chatId` = corrección**: se actualiza esa comida, no se duplica. Sin `chatId`, la app asigna `fecha-categoría` (con `-2`, `-3` si ya existe).
 - Categorías: Pre-entreno, Desayuno, Almuerzo, Snack, Merienda, Cena, Postre. Confianza: alta, media-alta, media, baja-media, baja.
 - Un día cerrado no se pisa salvo que lo tildes explícitamente en la vista previa.
+
+## Vista previa pública (temporal)
+
+Con `PUBLIC_PREVIEW=1` (en Vercel: Settings → Environment Variables → redeploy) se pueden **ver** Hoy, Semana, Comidas, Cuerpo y sueño y Tiempo sin iniciar sesión, para ir dando feedback del diseño.
+
+- Es solo lectura: **Cargar, borrar y las fotos siguen pidiendo login**, y cualquier POST sin sesión se redirige al login.
+- Las fotos de comidas nunca se muestran en la vista previa.
+- Arriba aparece un aviso fijo mientras esté prendida, y las páginas llevan `noindex` (con o sin la vista previa).
+- Cualquiera con el link ve los datos de salud que haya en la base. **Para protegerla de nuevo: borrar `PUBLIC_PREVIEW` y redeployar.** Sin la variable, todo exige login como antes.

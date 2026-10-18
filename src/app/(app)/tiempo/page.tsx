@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { getTimeUse } from '@/lib/data';
 import { TIME_CATEGORIES } from '@/lib/constants';
@@ -22,6 +23,7 @@ const h = (n: number) => String(round1(n)).replace('.', ',');
 const WEEKS = 8;
 
 async function Tiempo({ searchParams }: Pick<PageProps<'/tiempo'>, 'searchParams'>) {
+  await connection(); // dinámica desde el principio: usa la fecha de hoy y la sesión
   const sp = await searchParams;
   const today = todayAR();
   const thisMonday = mondayOf(today);

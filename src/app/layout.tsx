@@ -7,6 +7,7 @@ const nunito = Nunito({ variable: '--font-nunito', subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Mi Bitácora de Salud',
   description: 'Dieta, sueño, entreno y tiempo de Conti',
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
