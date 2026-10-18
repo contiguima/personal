@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mi Bitácora de Salud
 
-## Getting Started
+Web personal de Conti: dieta, sueño, entreno, actividad, medidas y uso del tiempo.
+Next.js 16 (App Router) + TypeScript + Tailwind · Neon Postgres + Drizzle · Auth.js (Google, un solo mail) · Vercel.
 
-First, run the development server:
+## Datos
+
+- `data/bitacora_salud.jsx`: el artefacto original, fuente del historial.
+- `scripts/legacy.ts` evalúa sus constantes y reproduce el merge del artefacto.
+- `src/lib/ingest.ts` es la única puerta de escritura: upsert por `chatId` (corregir nunca duplica) y respeta días cerrados salvo `force`.
+
+## Puesta en marcha
 
 ```bash
+cp .env.example .env.local     # completar
+npm install
+npm run db:migrate             # crea las tablas
+npm run db:seed                # migra todo el historial (--reset para rehacer)
+npm run db:verify              # compara la base contra el .jsx
+npm test                       # reglas de carga (usar una base de prueba)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Neon
+Crear un proyecto en neon.tech y copiar el connection string en `DATABASE_URL`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Login con Google
+1. Google Cloud Console → APIs y servicios → Credenciales → ID de cliente OAuth (aplicación web).
+2. URI de redirección: `http://localhost:3000/api/auth/callback/google` y `https://<tu-dominio>/api/auth/callback/google`.
+3. Copiar ID y secreto en `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET`. `AUTH_SECRET` sale de `npx auth secret`.
+4. `ALLOWED_EMAIL` es el único mail que puede entrar.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Vercel
+Importar el repo, cargar las mismas variables de entorno y deployar. Correr `db:migrate` y `db:seed` una vez apuntando a Neon.
