@@ -1,26 +1,125 @@
 @import "tailwindcss";
 
+/* Paleta: crema, verde palta, coral, mostaza y azul agua. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --bg: #f8f1e4;
+  --card: #fffdf8;
+  --card-2: #f3ead9;
+  --line: #e6dac4;
+  --ink: #2e2a24;
+  --ink-2: #6b6357;
+  --ink-3: #9a9083;
+  --palta: #4f7d2f;
+  --palta-soft: #e3edd5;
+  --coral: #d9603f;
+  --coral-soft: #f8e1d8;
+  --mostaza: #b9860c;
+  --mostaza-soft: #f6ebcd;
+  --agua: #2f86b5;
+  --agua-soft: #dcecf4;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Macros (identidad fija) */
+  --m-kcal: #4f7d2f;
+  --m-protein: #d9603f;
+  --m-carbs: #b9860c;
+  --m-fat: #7b5ea7;
+  --m-fiber: #1f9e89;
+
+  /* Categorías de tiempo, orden fijo, validado (CVD) contra --card */
+  --t-deporte: #2f86b5;
+  --t-trabajoCorpo: #5e8c3a;
+  --t-sideHustle: #d0579a;
+  --t-emprendedurismo: #c9920e;
+  --t-aprendizaje: #7b5ea7;
+  --t-tiktok: #1f9e89;
+  --t-social: #e2694a;
+  --t-otros: #4a55a2;
+
+  /* Balance: divergente */
+  --deficit: #2f86b5;
+  --superavit: #d9603f;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #1d1a15;
+    --card: #2a2620;
+    --card-2: #34302a;
+    --line: #443e35;
+    --ink: #f3ecdf;
+    --ink-2: #c4baa9;
+    --ink-3: #8f8577;
+    --palta: #8bbd5f;
+    --palta-soft: #2f3a24;
+    --coral: #ec8a6c;
+    --coral-soft: #42291f;
+    --mostaza: #ddb24a;
+    --mostaza-soft: #3d331a;
+    --agua: #5aa9d6;
+    --agua-soft: #1f3440;
+
+    --m-kcal: #70a048;
+    --m-protein: #d97253;
+    --m-carbs: #b58a18;
+    --m-fat: #9079c2;
+    --m-fiber: #29a68f;
+
+    --t-deporte: #4a9bc9;
+    --t-trabajoCorpo: #70a048;
+    --t-sideHustle: #d2689d;
+    --t-emprendedurismo: #b58a18;
+    --t-aprendizaje: #9079c2;
+    --t-tiktok: #29a68f;
+    --t-social: #d97253;
+    --t-otros: #6e7acb;
+
+    --deficit: #4a9bc9;
+    --superavit: #d97253;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-card-2: var(--card-2);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-palta: var(--palta);
+  --color-palta-soft: var(--palta-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-mostaza: var(--mostaza);
+  --color-mostaza-soft: var(--mostaza-soft);
+  --color-agua: var(--agua);
+  --color-agua-soft: var(--agua-soft);
+  --font-sans: var(--font-nunito);
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-nunito), ui-rounded, system-ui, sans-serif;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.aparecer { animation: aparecer 0.35s ease-out both; }
+
+@keyframes llenar {
+  from { stroke-dashoffset: var(--ring-len); }
+}
+.ring-fill { animation: llenar 0.9s cubic-bezier(0.3, 0.7, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .aparecer, .ring-fill { animation: none; }
 }
