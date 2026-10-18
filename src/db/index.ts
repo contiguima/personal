@@ -1,14 +1,14 @@
-import { drizzle as drizzleNeon } from 'drizzle-orm/neon-serverless';
-import { drizzle as drizzlePg } from 'drizzle-orm/node-postgres';
-import { Pool as NeonPool } from '@neondatabase/serverless';
-import { Pool as PgPool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { attachDatabasePool } from '@vercel/functions';
+import { Pool } from 'pg';
 import * as schema from './schema';
 
+// node-postgres + Fluid compute de Vercel (recomendación de Neon). DATABASE_URL es la URL pooled de Neon.
 export function createDb(url = process.env.DATABASE_URL) {
   if (!url) throw new Error('Falta DATABASE_URL');
-  // Neon en producción (websocket, soporta transacciones); Postgres común en local.
-  if (url.includes('neon.tech')) return drizzleNeon(new NeonPool({ connectionString: url }), { schema });
-  return drizzlePg(new PgPool({ connectionString: url }), { schema });
+  const pool = new Pool({ connectionString: url, max: 5 });
+  attachDatabasePool(pool);
+  return drizzle(pool, { schema });
 }
 
 export type Db = ReturnType<typeof createDb>;
